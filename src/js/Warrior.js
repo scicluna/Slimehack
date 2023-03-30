@@ -1,4 +1,3 @@
-// src/characters/Warrior.js
 import Phaser from 'phaser';
 
 export default class Warrior {
@@ -6,14 +5,19 @@ export default class Warrior {
     this.scene = scene;
 
     // Initialize the warrior sprite
-    this.sprite = this.scene.add.sprite(x, y, 'warrior');
-
-    // Set the scale to make it twice as big (optional)
+    this.sprite = this.scene.add.sprite(0, 15, 'warrior');
     this.sprite.setScale(2);
 
-    // Enable physics for the warrior
-    this.scene.physics.add.existing(this.sprite);
-    this.sprite.body.collideWorldBounds = true;
+    // Designate the warrior's hitbox
+    this.hitbox = this.scene.add.rectangle(-15, 30, 35, 35);
+    this.scene.physics.add.existing(this.hitbox);
+    this.hitbox.setFillStyle(0xff0000, 0.5);
+    this.hitbox.body.setAllowGravity(false)
+
+    // Create a container to hold the warrior sprite and its hitbox
+    this.container = this.scene.add.container(x, y, [this.sprite, this.hitbox]);
+    this.scene.physics.world.enable(this.container);
+    this.container.body.collideWorldBounds = true;
 
     // Set up warrior animations
     this.createAnimations();
@@ -63,24 +67,28 @@ export default class Warrior {
       repeat: -1
     })
   }
-
+  
+  getFacingDirection() {
+    return this.sprite.flipX ? 'left' : 'right';
+  }
 
   update() {
     // Set the warrior's velocity to 0 by default
     const speed = 200;
     const jumpSpeed = 250;
-    const self = this.sprite.body;
+    const aerialDrift = 100;
+    const self = this.container.body;
     self.setVelocityX(0);
   
     if (this.spacebar.isDown && self.onFloor()) {
       this.sprite.play('attack', true);
       return;
     } else if (this.spacebar.isDown && !self.onFloor() && this.cursors.left.isDown) {
-      self.setVelocityX(-speed);
+      self.setVelocityX(-speed + aerialDrift);
       this.sprite.play('attack', true);
       return;
     } else if (this.spacebar.isDown && !self.onFloor() && this.cursors.right.isDown) {
-      self.setVelocityX(speed);
+      self.setVelocityX(speed - aerialDrift);
       this.sprite.play('attack', true);
       return;
     }
@@ -127,6 +135,11 @@ export default class Warrior {
         self.setVelocityY(-jumpSpeed);
       }
     }
+    if (this.getFacingDirection() === 'left') {
+      this.hitbox.x = 15; // Adjust the value based on your hitbox position when facing left
+    } else {
+      this.hitbox.x = -15; // Adjust the value based on your hitbox position when facing right
+    }
   }
-  
+
 }

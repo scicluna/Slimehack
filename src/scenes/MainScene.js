@@ -17,7 +17,7 @@ export default class MainScene extends Phaser.Scene {
     create() {
     // Initialize the Warrior instance and any other game objects here
     this.add.image(500, 400, 'forest');
-    this.warrior = new Warrior(this, 150, 150);
+    this.warrior = new Warrior(this, 0, 800);
     
 
     // ... Other game object initialization and input handling ...

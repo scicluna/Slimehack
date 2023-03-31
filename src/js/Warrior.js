@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 export default class Warrior {
   constructor(scene, x, y) {
     this.scene = scene;
+    this.hp = 3;
     
     // Initialize the warrior sprite
     this.sprite = this.scene.add.sprite(0, 15, 'warrior');
@@ -14,22 +15,16 @@ export default class Warrior {
     this.hitbox.setFillStyle(0xff0000, 0.5);
     this.hitbox.body.setAllowGravity(false)
 
-
     this.attackHitbox = this.scene.add.rectangle(0, 0, 80, 80 );
     this.scene.physics.add.existing(this.attackHitbox);
     this.attackHitbox.setFillStyle(0x00ff00, 0.5);
     this.attackHitbox.body.setAllowGravity(false);
     this.attackHitbox.active = false
 
-
-
     // Create a container to hold the warrior sprite and its hitbox
     this.container = this.scene.add.container(x, y, [this.sprite, this.hitbox, this.attackHitbox]);
     this.scene.physics.world.enable(this.container);
     this.container.body.collideWorldBounds = true;
-
-
-    
 
     // Set up warrior animations
     this.createAnimations();
@@ -79,6 +74,43 @@ export default class Warrior {
       repeat: -1
     })
   }
+
+  takeDamage(knockbackDirection) {
+    this.hp -= 1;
+    this.displayHP();
+    
+    const knockbackForce = 1500;
+    const self = this.container.body;
+    self.setVelocityY(500)
+
+    if (knockbackDirection === 'left') {
+      self.setVelocityX(-knockbackForce);
+    } else {
+      self.setVelocityX(knockbackForce);
+    }
+
+    if (this.hp <= 0) {
+      // Handle game over or warrior death here
+      console.log('dead')
+    }
+  }
+
+  displayHP() {
+    const hpText = this.scene.add.text(this.container.x, this.container.y - 60, `${this.hp}/3`, {
+      fontSize: '50px',
+      fill: '#ff0000'
+    });
+    hpText.setDepth(2);
+
+    this.scene.tweens.add({
+      targets: hpText,
+      alpha: 0,
+      duration: 3000,
+      onComplete: () => {
+        hpText.destroy();
+      }
+    });
+  }
   
   getFacingDirection() {
     return this.sprite.flipX ? 'left' : 'right';
@@ -97,7 +129,7 @@ export default class Warrior {
   update() {
     const clampedX = Phaser.Math.Clamp(this.container.x, 0, 1000);
     this.container.x = clampedX;
-    
+
     // Set the warrior's velocity to 0 by default
     const speed = 200;
     const jumpSpeed = 250;

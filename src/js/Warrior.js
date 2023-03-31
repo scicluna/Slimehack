@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 export default class Warrior {
   constructor(scene, x, y) {
     this.scene = scene;
-
+    
     // Initialize the warrior sprite
     this.sprite = this.scene.add.sprite(0, 15, 'warrior');
     this.sprite.setScale(2);
@@ -14,10 +14,22 @@ export default class Warrior {
     this.hitbox.setFillStyle(0xff0000, 0.5);
     this.hitbox.body.setAllowGravity(false)
 
+
+    this.attackHitbox = this.scene.add.rectangle(0, 0, 80, 80 );
+    this.scene.physics.add.existing(this.attackHitbox);
+    this.attackHitbox.setFillStyle(0x00ff00, 0.5);
+    this.attackHitbox.body.setAllowGravity(false);
+    this.attackHitbox.active = false
+
+
+
     // Create a container to hold the warrior sprite and its hitbox
-    this.container = this.scene.add.container(x, y, [this.sprite, this.hitbox]);
+    this.container = this.scene.add.container(x, y, [this.sprite, this.hitbox, this.attackHitbox]);
     this.scene.physics.world.enable(this.container);
     this.container.body.collideWorldBounds = true;
+
+
+    
 
     // Set up warrior animations
     this.createAnimations();
@@ -72,6 +84,16 @@ export default class Warrior {
     return this.sprite.flipX ? 'left' : 'right';
   }
 
+  createAttackHitbox() {
+    this.attackHitbox.active = true
+  }
+
+  destroyAttackHitbox() {
+    if (!this.spacebar.isDown){
+    this.attackHitbox.active = false
+    }
+  }
+  
   update() {
     // Set the warrior's velocity to 0 by default
     const speed = 200;
@@ -82,14 +104,26 @@ export default class Warrior {
   
     if (this.spacebar.isDown && self.onFloor()) {
       this.sprite.play('attack', true);
+      this.createAttackHitbox();
+      this.scene.time.delayedCall(5, () => {
+        this.destroyAttackHitbox();
+      })
       return;
     } else if (this.spacebar.isDown && !self.onFloor() && this.cursors.left.isDown) {
       self.setVelocityX(-speed + aerialDrift);
       this.sprite.play('attack', true);
+      this.createAttackHitbox();
+      this.scene.time.delayedCall(5, () => {
+        this.destroyAttackHitbox();
+      })
       return;
     } else if (this.spacebar.isDown && !self.onFloor() && this.cursors.right.isDown) {
       self.setVelocityX(speed - aerialDrift);
       this.sprite.play('attack', true);
+      this.createAttackHitbox();
+      this.scene.time.delayedCall(5, () => {
+        this.destroyAttackHitbox();
+      })
       return;
     }
   
@@ -139,6 +173,12 @@ export default class Warrior {
       this.hitbox.x = 15; // Adjust the value based on your hitbox position when facing left
     } else {
       this.hitbox.x = -15; // Adjust the value based on your hitbox position when facing right
+    }
+
+    if (this.getFacingDirection() === 'left') {
+      this.attackHitbox.x = -10; // Adjust the value based on your hitbox position when facing left
+    } else {
+      this.attackHitbox.x = 10; // Adjust the value based on your hitbox position when facing right
     }
   }
 

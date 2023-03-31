@@ -20,8 +20,9 @@ export default class Slime{
     this.container = this.scene.add.container(x, y, [this.sprite, this.hitbox]);
     this.scene.physics.world.enable(this.container);
     this.container.body.collideWorldBounds = true;
+    this.container.setData('instance', this);
     
-    this.container.body.setOffset(0, -40); // Move the body down to match the actual slime position within the sprite
+    this.container.body.setOffset(0, -40);
 
     // Set up slime animations
     this.createAnimations();
@@ -56,8 +57,10 @@ export default class Slime{
   }
 
   die(){
+    this.isDead = true
     this.sprite.play('slimedie', true)
     this.hitbox.destroy();
+    this.container.body.setVelocity(0, 0)
     this.scene.time.delayedCall(1500, () =>{
       this.sprite.destroy();
       this.container.destroy();

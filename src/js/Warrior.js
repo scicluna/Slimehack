@@ -95,6 +95,9 @@ export default class Warrior {
   }
   
   update() {
+    const clampedX = Phaser.Math.Clamp(this.container.x, 0, 1000);
+    this.container.x = clampedX;
+    
     // Set the warrior's velocity to 0 by default
     const speed = 200;
     const jumpSpeed = 250;
@@ -181,5 +184,6 @@ export default class Warrior {
       this.attackHitbox.x = 10; // Adjust the value based on your hitbox position when facing right
     }
   }
+  
 
 }

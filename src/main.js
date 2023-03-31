@@ -15,4 +15,5 @@ const config = {
     scene: [MainScene]
 };
 
+export const admin = true
 const game = new Phaser.Game(config);

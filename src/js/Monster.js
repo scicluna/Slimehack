@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { admin } from '../main';
 
 export class Monster {
   constructor(scene, x, y, textureKey, hitboxWidth, hitboxHeight) {
@@ -12,7 +13,6 @@ export class Monster {
     // Designate the hitbox
     this.hitbox = this.scene.add.rectangle(9, 13, hitboxWidth, hitboxHeight);
     this.scene.physics.add.existing(this.hitbox);
-    this.hitbox.setFillStyle(0xff0000, 0.5);
     this.hitbox.body.setAllowGravity(false);
 
     // Create a container to hold the sprite and its hitbox
@@ -21,6 +21,11 @@ export class Monster {
     this.container.body.collideWorldBounds = true;
     this.container.setData('instance', this);
     this.container.body.setOffset(0, -40);
+
+    // Admin tools
+    if (admin){
+    this.hitbox.setFillStyle(0xff0000, 0.5);
+    }
   }
 
   die() {

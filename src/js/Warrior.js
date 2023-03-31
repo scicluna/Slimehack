@@ -1,8 +1,11 @@
 import Phaser from 'phaser';
+import { admin } from '../main';
 
 export default class Warrior {
   constructor(scene, x, y) {
     this.scene = scene;
+
+    // Initialize warrior HP
     this.hp = 3;
     
     // Initialize the warrior sprite
@@ -12,16 +15,18 @@ export default class Warrior {
     // Designate the warrior's hitbox
     this.hitbox = this.scene.add.rectangle(-15, 30, 35, 35);
     this.scene.physics.add.existing(this.hitbox);
-    this.hitbox.setFillStyle(0xff0000, 0.5);
     this.hitbox.body.setAllowGravity(false)
 
+    // Designate the warrior's attack hitbox
     this.attackHitbox = this.scene.add.rectangle(0, 0, 80, 80 );
     this.scene.physics.add.existing(this.attackHitbox);
-    this.attackHitbox.setFillStyle(0x00ff00, 0.5);
     this.attackHitbox.body.setAllowGravity(false);
     this.attackHitbox.active = false
 
-    // Create a container to hold the warrior sprite and its hitbox
+    //attackHitbox Timer
+    this.attackHitboxTimer = false;
+
+    // Create a container to hold the warrior sprite and its hitboxes
     this.container = this.scene.add.container(x, y, [this.sprite, this.hitbox, this.attackHitbox]);
     this.scene.physics.world.enable(this.container);
     this.container.body.collideWorldBounds = true;
@@ -32,8 +37,16 @@ export default class Warrior {
     // Enable cursor keys for input
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.spacebar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+    // Admin tools
+    if (admin){
+    this.attackHitbox.setFillStyle(0x00ff00, 0.5);
+    this.hitbox.setFillStyle(0xff0000, 0.5);
+    }
   }
 
+
+  // Create warrior animations (running, idle, turning, jumping, and attacking)
   createAnimations() {
     // Create run cycle animations
     this.scene.anims.create({
@@ -75,6 +88,7 @@ export default class Warrior {
     })
   }
 
+  // Warrior takes damage and is knocked back
   takeDamage(knockbackDirection) {
     this.hp -= 1;
     this.displayHP();
@@ -86,15 +100,16 @@ export default class Warrior {
     if (knockbackDirection === 'left') {
       self.setVelocityX(-knockbackForce);
     } else {
-      self.setVelocityX(knockbackForce);
+      self.setVelocityX(knockbackForce)
     }
 
     if (this.hp <= 0) {
       // Handle game over or warrior death here
-      console.log('dead')
+     
     }
   }
 
+  // Display the warrior's HP with a fading text effect
   displayHP() {
     const hpText = this.scene.add.text(this.container.x, this.container.y - 60, `${this.hp}/3`, {
       fontSize: '50px',
@@ -111,21 +126,33 @@ export default class Warrior {
       }
     });
   }
-  
+
+  // Get the warrior's facing direction (left or right)
   getFacingDirection() {
     return this.sprite.flipX ? 'left' : 'right';
   }
 
-  createAttackHitbox() {
-    this.attackHitbox.active = true
-  }
-
-  destroyAttackHitbox() {
-    if (!this.spacebar.isDown){
-    this.attackHitbox.active = false
+  handleSpacebarPress() {
+    if (Phaser.Input.Keyboard.JustDown(this.spacebar) && !this.attackHitboxTimer) {
+      this.attackHitboxTimer = true;
+      this.attacktimer = this.scene.time.delayedCall(400, () => {
+        if (this.spacebar.isDown) {
+          this.attackHitbox.active = true;
+        }
+      }, null, this);
+    }
+  
+    if (Phaser.Input.Keyboard.JustUp(this.spacebar) && this.attackHitboxTimer) {
+      this.attackHitboxTimer = false;
+      this.attackHitbox.active = false;
+      if (this.attacktimer) {
+        this.attacktimer.remove();
+        this.attacktimer = null;
+      }
     }
   }
   
+  // Update the warrior's movement, animation, and hitboxes based on input
   update() {
     const clampedX = Phaser.Math.Clamp(this.container.x, 0, 1000);
     this.container.x = clampedX;
@@ -137,28 +164,27 @@ export default class Warrior {
     const self = this.container.body;
     self.setVelocityX(0);
   
+    // Handle the warrior's attack animation and attack hitbox
+    // based on spacebar input and whether the warrior is on the floor or not
+    // Also handle aerial drift during an attack
+    // (Code block continues from the previous code block)
+
+    // Update the warrior's position based on arrow keys input
+    this.handleSpacebarPress()
+
     if (this.spacebar.isDown && self.onFloor()) {
       this.sprite.play('attack', true);
-      this.createAttackHitbox();
-      this.scene.time.delayedCall(5, () => {
-        this.destroyAttackHitbox();
-      })
       return;
     } else if (this.spacebar.isDown && !self.onFloor() && this.cursors.left.isDown) {
       self.setVelocityX(-speed + aerialDrift);
       this.sprite.play('attack', true);
-      this.createAttackHitbox();
-      this.scene.time.delayedCall(5, () => {
-        this.destroyAttackHitbox();
-      })
       return;
     } else if (this.spacebar.isDown && !self.onFloor() && this.cursors.right.isDown) {
       self.setVelocityX(speed - aerialDrift);
       this.sprite.play('attack', true);
-      this.createAttackHitbox();
-      this.scene.time.delayedCall(5, () => {
-        this.destroyAttackHitbox();
-      })
+      return;
+    } else if (this.spacebar.isDown && !self.onFloor()) {
+      this.sprite.play('attack', true);
       return;
     }
   
@@ -198,24 +224,27 @@ export default class Warrior {
       this.sprite.play('idle', true);
     }
   
+    //Handle jumping based on up arrow key input
     if (this.cursors.up.isDown && self.onFloor()) {
       if (this.sprite.anims.currentAnim.key !== 'jump') {
         this.sprite.play('jump');
         self.setVelocityY(-jumpSpeed);
       }
     }
+
+    // Update hitbox positions
     if (this.getFacingDirection() === 'left') {
       this.hitbox.x = 15; // Adjust the value based on your hitbox position when facing left
     } else {
       this.hitbox.x = -15; // Adjust the value based on your hitbox position when facing right
     }
 
+    // Update attackbox positions
     if (this.getFacingDirection() === 'left') {
       this.attackHitbox.x = -10; // Adjust the value based on your hitbox position when facing left
     } else {
       this.attackHitbox.x = 10; // Adjust the value based on your hitbox position when facing right
     }
   }
-  
-
 }
+

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import {Monster} from './Monster';
+import { admin } from '../main';
 
 export class Slime extends Monster {
   constructor(scene, x, y, warrior, slimespeed) {
@@ -39,18 +40,19 @@ export class Slime extends Monster {
   }
 
   die() {
-    this.isDead = true;
+    this.isDying = true;
     this.sprite.play('slimedie', true);
     this.hitbox.destroy();
     this.container.body.setVelocity(0, 0);
     this.scene.time.delayedCall(1500, () => {
+      this.isDead = true
       this.sprite.destroy();
       this.container.destroy();
     });
   }
 
   update() {
-    if (this.isDead) return;
+    if (this.isDying) return;
     const self = this.container.body;
 
     // Calculate the direction towards the warrior

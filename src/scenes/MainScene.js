@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { admin } from '../main';
 import Warrior from '../js/Warrior';
 import {Slime} from '../js/Slime';
 import forestImg from '../assets/backgrounds/forest.jpg';
@@ -102,14 +103,12 @@ export default class MainScene extends Phaser.Scene {
   
         // Add overlap between Warrior hitbox and Slime hitbox for taking damage
         this.physics.add.overlap(this.warrior.hitbox, newSlime.hitbox, () => {
-          console.log(this.warriorInvincible)
           if (this.warriorInvincible) return
           this.warrior.takeDamage(this.warrior.getFacingDirection() === 'left' ? 'right' : 'left');
           this.makeWarriorInvincible(1000);
         }, null, this);
   
         // Set up Warrior attack hitbox and overlap with Slime hitbox for dealing damage
-        this.warrior.attackHitbox.active = false;
         this.physics.add.overlap(this.warrior.attackHitbox, newSlime.hitbox, () => {
           if (this.warrior.attackHitbox.active) {
             console.log('kill');

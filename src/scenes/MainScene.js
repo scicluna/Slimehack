@@ -3,7 +3,7 @@ import Warrior from '../js/Warrior';
 import {Slime} from '../js/Slime';
 import forestImg from '../assets/backgrounds/forest.jpg';
 import warriorSprites from '../assets/imgs/sprites/Warrior_Sheet-Effect.png';
-import slime from '../assets/imgs/sprites/slime.png';
+import slime from '../assets/imgs/sprites/slimefinal.png'
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -23,11 +23,11 @@ export default class MainScene extends Phaser.Scene {
     // Add background image
     this.add.image(500, 400, 'forest');
     // Set world bounds
-    this.physics.world.setBounds(-200, 0, 2000, 800);
+    this.physics.world.setBounds(-400, 0, 2000, 800);
     this.createScoreText()
 
     // Create Warrior and set up collision with world bounds
-    this.warrior = new Warrior(this, 100, 800);
+    this.warrior = new Warrior(this,500, 800);
     this.warrior.container.body.setCollideWorldBounds(true);
     this.warriorInvincible = false
 
@@ -45,11 +45,13 @@ export default class MainScene extends Phaser.Scene {
     // Set up Slime spawning properties
     this.slimeCap = 12;
     this.slimeSpeed = 40;
+    this.slimeGroup = 2;
+    this.slimeDelay = 1500;
 
     // Spawn Slimes every 3 seconds
     this.time.addEvent({
-      delay: 1500,
-      callback: () => this.spawnSlimes(2, this.slimeCap),
+      delay: this.slimeDelay,
+      callback: () => this.spawnSlimes(Math.ceil(this.slimeGroup), Math.ceil(this.slimeCap)),
       callbackScope: this,
       loop: true,
     });
@@ -67,8 +69,12 @@ export default class MainScene extends Phaser.Scene {
     });
 
     // Increment slimeCap and slimeSpeed over time
-    this.slimeCap += 0.005;
-    this.slimeSpeed += 0.05;
+    this.slimeCap += .005;
+    this.slimeSpeed += .05;
+    if (this.slimeDelay > 500){
+      this.slimeDelay -= .01;
+    }
+    this.slimeGroup += .001;
   }
 
   // Spawn Slimes function
@@ -81,8 +87,8 @@ export default class MainScene extends Phaser.Scene {
     this.cleanupSlimes();
 
     // Set spawn bounds for Slimes
-    let xSpawnbound1 = 1100;
-    let xSpawnbound2 = 1300;
+    let xSpawnbound1 = 1050;
+    let xSpawnbound2 = 1350;
 
     // Randomly spawn Slimes from the left or right side
     const rng = Math.ceil(Math.random() * 2);

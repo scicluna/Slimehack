@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import {Monster} from './Monster';
-import { admin } from '../main';
 
 export class Slime extends Monster {
   constructor(scene, x, y, warrior, slimespeed) {

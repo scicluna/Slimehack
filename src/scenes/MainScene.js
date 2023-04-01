@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { admin } from '../main';
 import Warrior from '../js/Warrior';
 import {Slime} from '../js/Slime';
 import forestImg from '../assets/backgrounds/forest.jpg';
@@ -19,6 +18,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+    this.gameOver = false
+    this.score = 0
     // Add background image
     this.add.image(500, 400, 'forest');
     // Set world bounds
@@ -38,23 +39,24 @@ export default class MainScene extends Phaser.Scene {
       collideWorldBounds: true,
     });
     
-    // Add collider between Slime hitboxes
+    // Add collider between Slime hitboxes (doesn't work?)
     this.physics.add.collider(this.slimeHitboxes, this.slimeHitboxes);
 
     // Set up Slime spawning properties
-    this.slimeCap = 8;
+    this.slimeCap = 12;
     this.slimeSpeed = 40;
 
     // Spawn Slimes every 3 seconds
     this.time.addEvent({
-      delay: 3000,
-      callback: () => this.spawnSlimes(3, this.slimeCap),
+      delay: 1500,
+      callback: () => this.spawnSlimes(2, this.slimeCap),
       callbackScope: this,
       loop: true,
     });
   }
 
   update() {
+    if (this.gameOver) return
     // Update Warrior
     this.warrior.update();
 
@@ -65,8 +67,8 @@ export default class MainScene extends Phaser.Scene {
     });
 
     // Increment slimeCap and slimeSpeed over time
-    this.slimeCap += 0.001;
-    this.slimeSpeed += 0.01;
+    this.slimeCap += 0.005;
+    this.slimeSpeed += 0.05;
   }
 
   // Spawn Slimes function

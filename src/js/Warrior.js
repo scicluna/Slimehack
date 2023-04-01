@@ -7,6 +7,7 @@ export default class Warrior {
 
     // Initialize warrior HP
     this.hp = 3;
+    this.gameOver = false
     
     // Initialize the warrior sprite
     this.sprite = this.scene.add.sprite(0, 15, 'warrior');
@@ -105,7 +106,9 @@ export default class Warrior {
 
     if (this.hp <= 0) {
       // Handle game over or warrior death here
-     
+      this.scene.gameOver = true;
+      this.scene.scene.start('game-over', { score: this.scene.score });
+      this.scene.score = 0
     }
   }
 
@@ -154,6 +157,8 @@ export default class Warrior {
   
   // Update the warrior's movement, animation, and hitboxes based on input
   update() {
+    console.log(this.scene.gameOver)
+    if (this.scene.gameOver) return
     const clampedX = Phaser.Math.Clamp(this.container.x, 0, 1000);
     this.container.x = clampedX;
 
@@ -213,6 +218,8 @@ export default class Warrior {
     } else {
       // Play idle animation when the warrior is not moving horizontally
       const currentAnim = this.sprite.anims.currentAnim;
+
+      if (!currentAnim) return
       if (currentAnim && currentAnim.key.includes('run')) {
         self.setVelocityX(0);
         this.sprite.play('idle', true);

@@ -33,7 +33,7 @@ app.use(cors({
       const HighScore = mongoose.model('HighScore', highScoreSchema, 'highscores');
   
       app.get('/api/highscores', async (req, res) => {
-        const highScores = await HighScore.find().sort({ score: -1 }).limit(10);
+        const highScores = await HighScore.find().sort({ score: -1 }).limit(1);
         res.json(highScores);
       });
 

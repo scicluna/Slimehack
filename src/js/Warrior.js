@@ -1,5 +1,5 @@
 const Phaser = window.Phaser;
-import { admin } from '../main';
+import { admin } from '../main.js';
 
 export default class Warrior {
   constructor(scene, x, y) {

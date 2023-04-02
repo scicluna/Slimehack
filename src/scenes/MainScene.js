@@ -1,9 +1,9 @@
 const Phaser = window.Phaser;
 import Warrior from '../js/Warrior.js';
 import {Slime} from '../js/Slime.js';
-import forestImg from '../assets/backgrounds/forest.jpg';
-import warriorSprites from '../assets/imgs/sprites/Warrior_Sheet-Effect.png';
-import slime from '../assets/imgs/sprites/slimefinal.png'
+const forestImg = require('../assets/backgrounds/forest.jpg');
+const warriorSprites = require('../assets/imgs/sprites/Warrior_Sheet-Effect.png');
+const slime = require('../assets/imgs/sprites/slimefinal.png');
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -14,9 +14,9 @@ export default class MainScene extends Phaser.Scene {
   preload() {
     this.isLoading = true;
     // Preload images and spritesheets
-    this.load.image('forest', forestImg);
-    this.load.spritesheet('warrior', warriorSprites, { frameWidth: 69, frameHeight: 44 });
-    this.load.spritesheet('slime', slime, { frameWidth: 80, frameHeight: 72 });
+    this.load.image('forest', forestImg.default);
+    this.load.spritesheet('warrior', warriorSprites.default, { frameWidth: 69, frameHeight: 44 });
+    this.load.spritesheet('slime', slime.default, { frameWidth: 80, frameHeight: 72 });
   }
 
   async create() {

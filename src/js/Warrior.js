@@ -171,8 +171,6 @@ export default class Warrior {
     // Handle the warrior's attack animation and attack hitbox
     // based on spacebar input and whether the warrior is on the floor or not
     // Also handle aerial drift during an attack
-    // (Code block continues from the previous code block)
-
     // Update the warrior's position based on arrow keys input
     this.handleSpacebarPress()
 

@@ -18,7 +18,7 @@ app.use(cors({
     credentials: true
   }));
 
-  app.use(express.static(path.join(__dirname, 'src')));
+  app.use(express.static('src'));
   
   async function startServer() {
     try {

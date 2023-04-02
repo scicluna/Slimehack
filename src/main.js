@@ -1,4 +1,4 @@
-import Phaser from 'phaser'
+import * as Phaser from '/phaser';
 import MainScene from './scenes/MainScene.js';
 import GameOverScene from './scenes/GameOver.js';
 
@@ -36,3 +36,4 @@ const game = new Phaser.Game(config);
 //More warrior animations/attacks
 //Fix deploy issue with the ./bundle.js (wonder if my fix worked... idk...)
 //Title Screen
+//Tutorial that shows up when no cookie

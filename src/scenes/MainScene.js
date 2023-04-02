@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from '/phaser';
 import Warrior from '../js/Warrior';
 import {Slime} from '../js/Slime';
 import forestImg from '../assets/backgrounds/forest.jpg';

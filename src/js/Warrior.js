@@ -92,12 +92,20 @@ export default class Warrior {
       frameRate: 15,
       repeat: -1
     })
+
+        // Create attacking animation
+        this.scene.anims.create({
+          key: 'die',
+          frames: this.scene.anims.generateFrameNumbers('warrior', { start: 26, end: 37 }),
+          frameRate: 10,
+          repeat: -1
+        })
     
   }
 
   // Warrior takes damage and is knocked back
   takeDamage(knockbackDirection) {
-    if (this.gameOver) return
+    if (this.gameOver || this.scene.gameOver) return
     this.hp -= 1;
     this.displayHP();
     
@@ -113,9 +121,15 @@ export default class Warrior {
 
     if (this.hp <= 0) {
       // Handle game over or warrior death here
-      this.scene.battlemusic.stop()
-      this.scene.gameOver = true;
-      this.scene.scene.start('game-over', { score: this.scene.score });
+      this.sprite.play('die', true);
+      this.gameOver = true;
+      this.scene.gameOver = true
+      self.setVelocityX(0);
+
+      this.scene.time.delayedCall(1000, () => {
+        this.scene.battlemusic.stop()
+        this.scene.scene.start('game-over', { score: this.scene.score });
+      })
     }
   }
 

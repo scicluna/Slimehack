@@ -156,7 +156,6 @@ export default class MainScene extends Phaser.Scene {
         // Set up Warrior attack hitbox and overlap with Slime hitbox for dealing damage
         this.physics.add.overlap(this.warrior.attackHitbox, newSlime.hitbox, () => {
           if (this.warrior.attackHitbox.active) {
-            console.log('kill');
             newSlime.die();
             this.score++
             this.scoreText.setText(`Score: ${this.score}`);
@@ -182,11 +181,13 @@ export default class MainScene extends Phaser.Scene {
       this.hit.play()
       this.warriorInvincible = true;
       this.warrior.sprite.setAlpha(0.5);
-    
+
+      if (!this.warrior.gameOver){
       this.time.delayedCall(duration, () => {
         this.warriorInvincible = false;
         this.warrior.sprite.setAlpha(1);
       });
+    }
     }
 
     createScoreText() {

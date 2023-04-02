@@ -8,6 +8,7 @@ import slash from '../assets/sounds/sword.wav'
 import slimeDie from '../assets/sounds/splat.mp3'
 import battleMusic from '../assets/sounds/battle.mp3'
 import hit from '../assets/sounds/hit.wav'
+import keyboard from '../assets/imgs/sprites/Keyboard.png'
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -19,6 +20,7 @@ export default class MainScene extends Phaser.Scene {
     this.isLoading = true;
     // Preload images and spritesheets
     this.load.image('forest', forestImg);
+    this.load.image('keyboard', keyboard)
     this.load.spritesheet('warrior', warriorSprites, { frameWidth: 69, frameHeight: 44 });
     this.load.spritesheet('slime', slime, { frameWidth: 80, frameHeight: 72 });
     this.load.audio('slash', slash)

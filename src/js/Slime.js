@@ -82,6 +82,7 @@ export class Slime extends Monster {
   
       this.scene.time.delayedCall(400, () => {
         // Adjust the hitbox scale during the jump
+        if (this.isDying || this.isDead) return
         this.container.body.setVelocityY(-jumpSpeed);
         this.sprite.play('slimejump', true);
         if (this.facingDirection == 'right') {

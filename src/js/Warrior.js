@@ -13,6 +13,8 @@ export default class Warrior {
     this.sprite = this.scene.add.sprite(0, 15, 'warrior');
     this.sprite.setScale(2);
 
+    this.tutorialSprite = null;
+
     // Designate the warrior's hitbox
     this.hitbox = this.scene.add.rectangle(-15, 30, 37, 35);
     this.scene.physics.add.existing(this.hitbox);
@@ -34,6 +36,7 @@ export default class Warrior {
 
     // Set up warrior animations
     this.createAnimations();
+    this.displayTutorial();
 
     // Enable cursor keys for input
     this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -116,6 +119,7 @@ export default class Warrior {
     }
   }
 
+
   // Display the warrior's HP with a fading text effect
   displayHP() {
     const hpText = this.scene.add.text(this.container.x, this.container.y - 60, `${this.hp}/3`, {
@@ -130,6 +134,21 @@ export default class Warrior {
       duration: 3000,
       onComplete: () => {
         hpText.destroy();
+      }
+    });
+  }
+
+  displayTutorial() {
+    this.tutorialSprite = this.scene.add.image(this.container.x, this.container.y - 150, 'keyboard')
+    this.tutorialSprite.setScale(2)
+    this.tutorialSprite.setDepth(2);
+
+    this.scene.tweens.add({
+      targets: this.tutorialSprite,
+      alpha: 0,
+      duration: 10000,
+      onComplete: () => {
+        this.tutorialSprite.destroy();
       }
     });
   }

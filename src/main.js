@@ -1,6 +1,7 @@
 const Phaser = window.Phaser;
 import MainScene from './scenes/MainScene.js';
 import GameOverScene from './scenes/GameOver.js';
+import TitleScene from './scenes/TitleScene.js';
 
 const config = {
     type: Phaser.AUTO,
@@ -21,7 +22,7 @@ const config = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [MainScene, GameOverScene]
+    scene: [TitleScene, MainScene, GameOverScene]
 };
 
 export const admin = false
@@ -31,13 +32,14 @@ const game = new Phaser.Game(config);
 //Mongoose DB integration for highscores - DONE
 //Heroku Deploy - DONE
 
-//Sound Effects
-//Music
+//Sound Effects - DONE
+//Music - DONE
 
-//Local OR Heroku workaround for test purposes
+//Local OR Heroku workaround for test purposes - DONE
 
-//Title Screen
-//Tutorial that shows up when no cookie
+//Title Screen - DONE
+//Tutorial - DONE
 
 //ULTRA BONUS:
 //More warrior animations/attacks
+//Slimes jumping after death check - DONE

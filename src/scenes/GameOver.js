@@ -34,7 +34,7 @@ export default class GameOverScene extends Phaser.Scene {
 }
 
 function saveScore(score, initials) {
-  if (initials == undefined) return
+  if (initials == undefined || (location.hostname == "localhost" || location.hostname == "127.0.0.1")) return
   const newScore = {
     score,
     initials

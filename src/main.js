@@ -28,12 +28,16 @@ export const admin = false
 const game = new Phaser.Game(config);
 
 //GOALS:
-//Mongoose DB integration for highscores
-//Heroku Deploy
+//Mongoose DB integration for highscores - DONE
+//Heroku Deploy - DONE
 
 //Sound Effects
 //Music
-//More warrior animations/attacks
-//Fix deploy issue with the ./bundle.js (wonder if my fix worked... idk...)
+
+//Local OR Heroku workaround for test purposes
+
 //Title Screen
 //Tutorial that shows up when no cookie
+
+//ULTRA BONUS:
+//More warrior animations/attacks

@@ -4,6 +4,10 @@ import {Slime} from '../js/Slime.js';
 import forestImg from '../assets/backgrounds/forest.jpg';
 import warriorSprites from '../assets/imgs/sprites/Warrior_Sheet-Effect.png';
 import slime from '../assets/imgs/sprites/slimefinal.png'
+import slash from '../assets/sounds/sword.wav'
+import slimeDie from '../assets/sounds/splat.mp3'
+import battleMusic from '../assets/sounds/battle.mp3'
+import hit from '../assets/sounds/hit.wav'
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -17,6 +21,10 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('forest', forestImg);
     this.load.spritesheet('warrior', warriorSprites, { frameWidth: 69, frameHeight: 44 });
     this.load.spritesheet('slime', slime, { frameWidth: 80, frameHeight: 72 });
+    this.load.audio('slash', slash)
+    this.load.audio('slimedie', slimeDie)
+    this.load.audio('battlemusic', battleMusic)
+    this.load.audio('hit', hit)
   }
 
   async create() {
@@ -73,6 +81,13 @@ export default class MainScene extends Phaser.Scene {
     this.pausedText.setVisible(false);
 
     this.isLoading = false;
+
+    //Audio
+    this.battlemusic = this.sound.add('battlemusic', {volume: 0.05});
+    this.battlemusic.play();
+    this.battlemusic.loop = true
+    this.hit = this.sound.add('hit', {volume: 0.1})
+
   }
 
   update() {
@@ -163,6 +178,7 @@ export default class MainScene extends Phaser.Scene {
     makeWarriorInvincible(duration) {
       if (this.warriorInvincible) return;
     
+      this.hit.play()
       this.warriorInvincible = true;
       this.warrior.sprite.setAlpha(0.5);
     
@@ -182,6 +198,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     async createHighScore() {
+      if (location.hostname == "localhost" || location.hostname == "127.0.0.1") return
       // Make a GET request to your API to retrieve the highest score
       const response = await fetch('https://slimehack.herokuapp.com/api/highscores'); // Replace with your deployed server URL if necessary
       const highScores = await response.json();

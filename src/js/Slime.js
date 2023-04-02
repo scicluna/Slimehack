@@ -18,6 +18,7 @@ export class Slime extends Monster {
     // Set up slime animations
     this.createAnimations();
     this.sprite.active = true;
+    this.slimeDieSound = this.scene.sound.add('slimedie', {volume: 0.05});
   }
 
   createAnimations() {
@@ -61,6 +62,7 @@ export class Slime extends Monster {
     this.sprite.play('slimedie', true);
     this.hitbox.destroy();
     this.container.body.setVelocity(0, 0);
+    this.slimeDieSound.play();
     this.scene.time.delayedCall(1500, () => {
       this.isDead = true
       this.sprite.destroy();

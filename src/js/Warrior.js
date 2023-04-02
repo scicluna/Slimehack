@@ -44,6 +44,8 @@ export default class Warrior {
     this.attackHitbox.setFillStyle(0x00ff00, 0.5);
     this.hitbox.setFillStyle(0xff0000, 0.5);
     }
+
+    this.slashSound = this.scene.sound.add('slash', {volume: 0.11});
   }
 
 
@@ -87,6 +89,7 @@ export default class Warrior {
       frameRate: 15,
       repeat: -1
     })
+    
   }
 
   // Warrior takes damage and is knocked back
@@ -107,6 +110,7 @@ export default class Warrior {
 
     if (this.hp <= 0) {
       // Handle game over or warrior death here
+      this.scene.battlemusic.stop()
       this.scene.gameOver = true;
       this.scene.scene.start('game-over', { score: this.scene.score });
     }
@@ -137,23 +141,41 @@ export default class Warrior {
 
   handleSpacebarPress() {
     if (Phaser.Input.Keyboard.JustDown(this.spacebar) && !this.attackHitboxTimer) {
-      this.attackHitboxTimer = true;
+      
+    this.attackHitboxTimer = true;
       this.attacktimer = this.scene.time.delayedCall(400, () => {
         if (this.spacebar.isDown) {
           this.attackHitbox.active = true;
+          this.slashSound.play()
+          this.slashSoundRepeatEvent = this.scene.time.addEvent({
+            delay: 380,
+            callback: () => {
+              this.slashSound.play();
+            },
+            callbackScope: this,
+            loop: true
+          })
         }
       }, null, this);
     }
-  
-    if (Phaser.Input.Keyboard.JustUp(this.spacebar) && this.attackHitboxTimer) {
+
+    if (Phaser.Input.Keyboard.JustUp(this.spacebar)) {
       this.attackHitboxTimer = false;
+      this.attacktimer.remove();
       this.attackHitbox.active = false;
+
       if (this.attacktimer) {
         this.attacktimer.remove();
         this.attacktimer = null;
       }
+
+      if (this.slashSoundRepeatEvent) {
+        this.slashSoundRepeatEvent.remove();
+        this.slashSoundRepeatEvent = null;
+      }
     }
   }
+
   
   // Update the warrior's movement, animation, and hitboxes based on input
   update() {

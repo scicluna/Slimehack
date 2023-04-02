@@ -1,5 +1,5 @@
 const Phaser = window.Phaser;
-import {Monster} from './Monster';
+import {Monster} from './Monster.js';
 
 export class Slime extends Monster {
   constructor(scene, x, y, warrior, slimespeed) {

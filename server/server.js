@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ app.use(cors({
     ],
     credentials: true
   }));
+
+  app.use(express.static('src'));
   
   async function startServer() {
     try {
@@ -32,6 +35,10 @@ app.use(cors({
       app.get('/api/highscores', async (req, res) => {
         const highScores = await HighScore.find().sort({ score: -1 }).limit(10);
         res.json(highScores);
+      });
+
+      app.get('/', (req, res) => {
+        res.sendFile(path.join(__dirname, 'src', 'index.html'));
       });
   
       app.post('/api/highscores', async (req, res) => {

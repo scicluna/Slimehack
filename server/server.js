@@ -18,8 +18,19 @@ app.use(cors({
     credentials: true
   }));
 
-  app.use(express.static('src'));
-  
+  // Add this middleware to serve correct MIME types
+app.use(express.static(('src'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.png')) {
+      res.setHeader('Content-Type', 'image/png');
+    } else if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) {
+      res.setHeader('Content-Type', 'image/jpeg');
+    } else if (filePath.endsWith('.gif')) {
+      res.setHeader('Content-Type', 'image/gif');
+    }
+  }
+}));
+
   async function startServer() {
     try {
       await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, bufferCommands: false });

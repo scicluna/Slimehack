@@ -1,5 +1,5 @@
 const Phaser = window.Phaser;
-import { admin } from '../main';
+import { admin } from '../main.js';
 
 export class Monster {
   constructor(scene, x, y, textureKey, hitboxWidth, hitboxHeight) {

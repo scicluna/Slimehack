@@ -27,17 +27,8 @@ module.exports = {
                 test: /\.(png|jpe?g|gif)$/i, 
                 type: 'asset/resource',
                 generator: {
-                    filename: 'static/assets/[hash][ext][query]'
+                    filename: 'assets/[hash][ext][query]'
                 },
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            outputPath: 'assets/',
-                            name: '[name].[ext]',
-                        },
-                    },
-                ],
             },
         ]
     },

@@ -25,6 +25,10 @@ module.exports = {
             },
             {
                 test: /\.(png|jpe?g|gif)$/i, 
+                type: 'asset/resource',
+                generator: {
+                    filename: 'static/assets/[hash][ext][query]'
+                },
                 use: [
                     {
                         loader: 'file-loader',
@@ -39,7 +43,9 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './src/index.html'
+            template: './src/index.html',
+            filename: 'index.html',
+            scriptLoading: 'defer'
         }),
         new webpack.ProvidePlugin({
             Phaser: 'phaser',

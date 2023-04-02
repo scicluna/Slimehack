@@ -19,7 +19,7 @@ app.use(cors({
   }));
 
   // Add this middleware to serve correct MIME types
-app.use(express.static(('src'), {
+app.use(express.static(path.join(__dirname, 'dist')), {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.png')) {
       res.setHeader('Content-Type', 'image/png');
@@ -29,7 +29,7 @@ app.use(express.static(('src'), {
       res.setHeader('Content-Type', 'image/gif');
     }
   }
-}));
+});
 
   async function startServer() {
     try {

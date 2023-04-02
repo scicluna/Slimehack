@@ -91,6 +91,7 @@ export default class Warrior {
 
   // Warrior takes damage and is knocked back
   takeDamage(knockbackDirection) {
+    if (this.gameOver) return
     this.hp -= 1;
     this.displayHP();
     

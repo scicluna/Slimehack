@@ -4,8 +4,12 @@ import GameOverScene from './scenes/GameOver.js';
 
 const config = {
     type: Phaser.AUTO,
+    parent: 'game-container',
     width: 1000,
     height: 800,
+    dom: {
+        createContainer: true
+    },
     physics: {
         default: 'arcade',
         arcade: {
@@ -24,15 +28,11 @@ export const admin = false
 const game = new Phaser.Game(config);
 
 //GOALS:
-//Slimes occasionally jump at the player. -- GOOD ENOUGH, the hitbox is slightly jank
-//Slimes occassionally attack the player. -- DONE
-//Slimes can come in all different colors.  -- DONE
-//Pause button - DONE
-//Save highscore to local storage and display top right  -- DONE
-//Fix warrior hitbox so slimes on the left always collide -- DONE
-//Rename to Slimehack
-//Deploy somewhere
-
 //Sound Effects
 //Music
 //More warrior animations/attacks
+//Fix deploy issue with the ./bundle.js (wonder if my fix worked... idk...)
+//Mongoose DB integration for highscores
+//Enter for new game
+//Title Screen
+//Heroku Deploy

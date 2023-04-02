@@ -21,10 +21,25 @@
             /* Optional, set the background color */
         }
 
-        canvas {
+        canvas,
+        div {
             width: 1000px !important;
             height: 800px !important;
             margin: 0 !important;
+            position: absolute;
+            transform: none !important;
+        }
+
+        canvas {
+            z-index: 1;
+        }
+
+        div {
+            z-index: 5;
+        }
+
+        div>input {
+            color: black;
         }
     </style>
 </head>
@@ -32,7 +47,6 @@
 </head>
 
 <body style="background-color: black;">
-
 </body>
 
 </html>

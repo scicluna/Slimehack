@@ -12,13 +12,14 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
+    this.isLoading = true;
     // Preload images and spritesheets
     this.load.image('forest', forestImg);
     this.load.spritesheet('warrior', warriorSprites, { frameWidth: 69, frameHeight: 44 });
     this.load.spritesheet('slime', slime, { frameWidth: 80, frameHeight: 72 });
   }
 
-  create() {
+  async create() {
     this.gameOver = false
     this.score = 0
     // Add background image
@@ -26,7 +27,7 @@ export default class MainScene extends Phaser.Scene {
     // Set world bounds
     this.physics.world.setBounds(-400, 0, 2000, 800);
     this.createScoreText()
-    this.createHighScore()
+    await this.createHighScore();
 
     // Create Warrior and set up collision with world bounds
     this.warrior = new Warrior(this,500, 800);
@@ -71,11 +72,11 @@ export default class MainScene extends Phaser.Scene {
     this.pausedText.setDepth(1001);
     this.pausedText.setVisible(false);
 
-
-
+    this.isLoading = false;
   }
 
   update() {
+    if (this.isLoading) return
     if (Phaser.Input.Keyboard.JustDown(this.pauseKey)) this.togglePause()
     if (this.isPaused) return
     if (this.gameOver) return
@@ -180,18 +181,24 @@ export default class MainScene extends Phaser.Scene {
       this.scoreText = this.add.text(16, 16, `Score: ${this.score}`, style);
     }
 
-    createHighScore() {
-    // Get the high score from localStorage
-    const highScore = localStorage.getItem('highScore') || 0;
-
-    // Display the high score on the top-right corner
-    this.highScoreText = this.add.text(
-      this.scale.width - 16,
-      16,
-      `High Score: ${highScore}`,
-      { fontSize: '32px', color: '#ffffff' }
-    );
-    this.highScoreText.setOrigin(1, 0);
+    async createHighScore() {
+      // Make a GET request to your API to retrieve the highest score
+      const response = await fetch('http://localhost:3000/api/highscores'); // Replace with your deployed server URL if necessary
+      const highScores = await response.json();
+    
+      // Find the highest score in the retrieved data
+      const highestScoreObj = highScores.reduce((maxObj, scoreObj) => {
+        return scoreObj.score > maxObj.score ? scoreObj : maxObj;
+      }, { score: 0, initials: '' });
+    
+      // Display the highest score and initials on the top-right corner
+      this.highScoreText = this.add.text(
+        this.scale.width - 16,
+        16,
+        `High Score: ${highestScoreObj.initials} - ${highestScoreObj.score}`,
+        { fontSize: '32px', color: '#ffffff' }
+      );
+      this.highScoreText.setOrigin(1, 0);
     }
     
     togglePause() {

@@ -1,4 +1,4 @@
-import * as Phaser from '/phaser';
+import Phaser from 'phaser';
 import { admin } from '../main';
 
 export class Monster {

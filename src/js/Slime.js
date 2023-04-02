@@ -1,4 +1,4 @@
-import * as Phaser from '/phaser';
+import Phaser from 'phaser';
 import {Monster} from './Monster';
 
 export class Slime extends Monster {

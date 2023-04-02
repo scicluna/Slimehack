@@ -8,6 +8,7 @@ import slime from '../assets/imgs/sprites/slimefinal.png'
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super('MainScene');
+    this.isPaused = false;
   }
 
   preload() {
@@ -25,6 +26,7 @@ export default class MainScene extends Phaser.Scene {
     // Set world bounds
     this.physics.world.setBounds(-400, 0, 2000, 800);
     this.createScoreText()
+    this.createHighScore()
 
     // Create Warrior and set up collision with world bounds
     this.warrior = new Warrior(this,500, 800);
@@ -51,13 +53,31 @@ export default class MainScene extends Phaser.Scene {
     // Spawn Slimes every 3 seconds
     this.time.addEvent({
       delay: this.slimeDelay,
-      callback: () => this.spawnSlimes(Math.ceil(this.slimeGroup), Math.ceil(this.slimeCap)),
+      callback: () => this.spawnSlimes(Math.floor(this.slimeGroup), Math.ceil(this.slimeCap)),
       callbackScope: this,
       loop: true,
     });
+
+    this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    // Create a semi-transparent black rectangle that covers the entire screen
+    this.pauseOverlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.5);
+    this.pauseOverlay.setOrigin(0, 0);
+    this.pauseOverlay.setDepth(1000);
+    this.pauseOverlay.setVisible(false);
+
+    // Create the "Paused" text
+    this.pausedText = this.add.text(this.scale.width / 2, this.scale.height / 2, 'Paused', { fontSize: '32px', color: '#ffffff' });
+    this.pausedText.setOrigin(0.5);
+    this.pausedText.setDepth(1001);
+    this.pausedText.setVisible(false);
+
+
+
   }
 
   update() {
+    if (Phaser.Input.Keyboard.JustDown(this.pauseKey)) this.togglePause()
+    if (this.isPaused) return
     if (this.gameOver) return
     // Update Warrior
     this.warrior.update();
@@ -70,9 +90,9 @@ export default class MainScene extends Phaser.Scene {
 
     // Increment slimeCap and slimeSpeed over time
     this.slimeCap += .005;
-    this.slimeSpeed += .05;
+    this.slimeSpeed += .008;
     if (this.slimeDelay > 500){
-      this.slimeDelay -= .01;
+      this.slimeDelay -= .001;
     }
     this.slimeGroup += .001;
   }
@@ -159,5 +179,32 @@ export default class MainScene extends Phaser.Scene {
       if (this.score == undefined) this.score = 0
       this.scoreText = this.add.text(16, 16, `Score: ${this.score}`, style);
     }
+
+    createHighScore() {
+    // Get the high score from localStorage
+    const highScore = localStorage.getItem('highScore') || 0;
+
+    // Display the high score on the top-right corner
+    this.highScoreText = this.add.text(
+      this.scale.width - 16,
+      16,
+      `High Score: ${highScore}`,
+      { fontSize: '32px', color: '#ffffff' }
+    );
+    this.highScoreText.setOrigin(1, 0);
+    }
     
+    togglePause() {
+      this.isPaused = !this.isPaused
+      this.pauseOverlay.setVisible(this.isPaused);
+      this.pausedText.setVisible(this.isPaused);
+  
+      if (this.isPaused) {
+        // Stop animations and other game logic as needed
+        this.physics.pause();
+      } else {
+        // Resume animations and other game logic as needed
+        this.physics.resume();
+      }
+    }
   }

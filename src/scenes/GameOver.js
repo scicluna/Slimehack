@@ -21,7 +21,16 @@ export default class GameOverScene extends Phaser.Scene {
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     this.spacebar.on('down', () => {
+      saveScore(this.score);
       this.scene.start('MainScene');
     });
+  }
+}
+
+function saveScore(score) {
+  const highScore = localStorage.getItem('highScore');
+
+  if (highScore === null || score > parseInt(highScore, 10)) {
+    localStorage.setItem('highScore', score);
   }
 }

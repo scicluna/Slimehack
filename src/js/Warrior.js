@@ -14,7 +14,7 @@ export default class Warrior {
     this.sprite.setScale(2);
 
     // Designate the warrior's hitbox
-    this.hitbox = this.scene.add.rectangle(-15, 30, 35, 35);
+    this.hitbox = this.scene.add.rectangle(-15, 30, 37, 35);
     this.scene.physics.add.existing(this.hitbox);
     this.hitbox.body.setAllowGravity(false)
 
@@ -108,7 +108,6 @@ export default class Warrior {
       // Handle game over or warrior death here
       this.scene.gameOver = true;
       this.scene.scene.start('game-over', { score: this.scene.score });
-      this.scene.score = 0
     }
   }
 
@@ -157,7 +156,6 @@ export default class Warrior {
   
   // Update the warrior's movement, animation, and hitboxes based on input
   update() {
-    console.log(this.scene.gameOver)
     if (this.scene.gameOver) return
     const clampedX = Phaser.Math.Clamp(this.container.x, 0, 1000);
     this.container.x = clampedX;

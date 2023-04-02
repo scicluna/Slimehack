@@ -19,7 +19,7 @@ app.use(cors({
   }));
 
   // Add this middleware to serve correct MIME types
-app.use(express.static(path.join(__dirname, 'dist')))
+app.use(express.static(('dist')))
 
   async function startServer() {
     try {

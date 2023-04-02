@@ -183,7 +183,7 @@ export default class MainScene extends Phaser.Scene {
 
     async createHighScore() {
       // Make a GET request to your API to retrieve the highest score
-      const response = await fetch('http://localhost:3000/api/highscores'); // Replace with your deployed server URL if necessary
+      const response = await fetch('https://slimehack.herokuapp.com/api/highscores'); // Replace with your deployed server URL if necessary
       const highScores = await response.json();
     
       // Find the highest score in the retrieved data

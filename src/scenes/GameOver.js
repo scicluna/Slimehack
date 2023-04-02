@@ -39,7 +39,7 @@ function saveScore(score, initials) {
     score,
     initials
   }
-  fetch('http://localhost:3000/api/highscores', {
+  fetch('https://slimehack.herokuapp.com/api/highscores', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'

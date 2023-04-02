@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+const Phaser = window.Phaser;
 import {Monster} from './Monster';
 
 export class Slime extends Monster {

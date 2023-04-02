@@ -1,4 +1,4 @@
-import Phaser from 'phaser'
+const Phaser = window.Phaser;
 import MainScene from './scenes/MainScene.js';
 import GameOverScene from './scenes/GameOver.js';
 

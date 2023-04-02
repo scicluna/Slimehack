@@ -115,7 +115,6 @@ export default class MainScene extends Phaser.Scene {
 
   // Spawn Slimes function
   spawnSlimes(amt, slimeCap) {
-
     // Don't spawn more Slimes if the current number of Slimes exceeds the cap
     if (this.slimes.children.entries.length > Math.floor(slimeCap)) return;
 

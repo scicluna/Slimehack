@@ -93,13 +93,13 @@ export default class Warrior {
       repeat: -1
     })
 
-        // Create attacking animation
-        this.scene.anims.create({
-          key: 'die',
-          frames: this.scene.anims.generateFrameNumbers('warrior', { start: 26, end: 37 }),
-          frameRate: 10,
-          repeat: -1
-        })
+    // Create attacking animation
+    this.scene.anims.create({
+      key: 'die',
+      frames: this.scene.anims.generateFrameNumbers('warrior', { start: 26, end: 37 }),
+      frameRate: 10,
+      repeat: -1
+    })
     
   }
 

@@ -1,6 +1,6 @@
 const Phaser = window.Phaser;
 import Warrior from '../js/Warrior.js';
-import {Slime} from '../js/Slime.js';
+import { Slime } from '../js/Slime.js';
 import forestImg from '../assets/backgrounds/forest.jpg';
 import warriorSprites from '../assets/imgs/sprites/Warrior_Sheet-Effect.png';
 import slime from '../assets/imgs/sprites/slimefinal.png'
@@ -40,7 +40,7 @@ export default class MainScene extends Phaser.Scene {
     await this.createHighScore();
 
     // Create Warrior and set up collision with world bounds
-    this.warrior = new Warrior(this,500, 800);
+    this.warrior = new Warrior(this, 500, 800);
     this.warrior.container.body.setCollideWorldBounds(true);
     this.warriorInvincible = false
 
@@ -51,7 +51,7 @@ export default class MainScene extends Phaser.Scene {
     this.slimeHitboxes = this.physics.add.group({
       collideWorldBounds: true,
     });
-    
+
     // Add collider between Slime hitboxes (doesn't work?)
     this.physics.add.collider(this.slimeHitboxes, this.slimeHitboxes);
 
@@ -85,10 +85,10 @@ export default class MainScene extends Phaser.Scene {
     this.isLoading = false;
 
     //Audio
-    this.battlemusic = this.sound.add('battlemusic', {volume: 0.05});
+    this.battlemusic = this.sound.add('battlemusic', { volume: 0.05 });
     this.battlemusic.play();
     this.battlemusic.loop = true
-    this.hit = this.sound.add('hit', {volume: 0.1})
+    this.hit = this.sound.add('hit', { volume: 0.1 })
 
   }
 
@@ -109,7 +109,7 @@ export default class MainScene extends Phaser.Scene {
     // Increment slimeCap and slimeSpeed over time
     this.slimeCap += .005;
     this.slimeSpeed += .008;
-    if (this.slimeDelay > 500){
+    if (this.slimeDelay > 500) {
       this.slimeDelay -= .001;
     }
     this.slimeGroup += .001;
@@ -137,100 +137,100 @@ export default class MainScene extends Phaser.Scene {
     // Spawn the specified number of Slimes
     for (let i = 0; i < amt; i++) {
       const newSlime = new Slime(this, Phaser.Math.FloatBetween(xSpawnbound1, xSpawnbound2), 800, this.warrior, this.slimeSpeed);
-      
-        // Set up Slime properties and add to the Slime groups
-        newSlime.container.body.setCollideWorldBounds(false);
-        newSlime.hitbox.setData('instance', newSlime);
-        newSlime.container.body.setDamping(true);
-        this.slimes.add(newSlime.container);
-        this.slimeHitboxes.add(newSlime.hitbox);
-        newSlime.container.body.setVelocityX(-100);
-  
-        // Add overlap between Warrior hitbox and Slime hitbox for taking damage
-        this.physics.add.overlap(this.warrior.hitbox, newSlime.hitbox, () => {
-          if (this.warriorInvincible) return
-          this.warrior.takeDamage(this.warrior.getFacingDirection() === 'left' ? 'right' : 'left');
-          this.makeWarriorInvincible(1000);
-        }, null, this);
-  
-        // Set up Warrior attack hitbox and overlap with Slime hitbox for dealing damage
-        this.physics.add.overlap(this.warrior.attackHitbox, newSlime.hitbox, () => {
-          if (this.warrior.attackHitbox.active) {
-            newSlime.die();
-            this.score++
-            this.scoreText.setText(`Score: ${this.score}`);
-          }
-        }, null, this);
-      }
-    }
-  
-    // Clean up dead Slimes
-    cleanupSlimes() {
-      this.slimes.children.each((slimeContainer) => {
-        const slime = slimeContainer.getData('instance');
-        if (slime.isDead) {
-          this.slimes.remove(slimeContainer, true, true);
-          this.slimeHitboxes.remove(slime.hitbox, true, true);
+
+      // Set up Slime properties and add to the Slime groups
+      newSlime.container.body.setCollideWorldBounds(false);
+      newSlime.hitbox.setData('instance', newSlime);
+      newSlime.container.body.setDamping(true);
+      this.slimes.add(newSlime.container);
+      this.slimeHitboxes.add(newSlime.hitbox);
+      newSlime.container.body.setVelocityX(-100);
+
+      // Add overlap between Warrior hitbox and Slime hitbox for taking damage
+      this.physics.add.overlap(this.warrior.hitbox, newSlime.hitbox, () => {
+        if (this.warriorInvincible) return
+        this.warrior.takeDamage(this.warrior.getFacingDirection() === 'left' ? 'right' : 'left');
+        this.makeWarriorInvincible(1000);
+      }, null, this);
+
+      // Set up Warrior attack hitbox and overlap with Slime hitbox for dealing damage
+      this.physics.add.overlap(this.warrior.attackHitbox, newSlime.hitbox, () => {
+        if (this.warrior.attackHitbox.active) {
+          newSlime.die();
+          this.score++
+          this.scoreText.setText(`Score: ${this.score}`);
         }
-      });
+      }, null, this);
     }
+  }
 
-    makeWarriorInvincible(duration) {
-      if (this.warriorInvincible) return;
-    
-      this.hit.play()
-      this.warriorInvincible = true;
-      this.warrior.sprite.setAlpha(0.5);
+  // Clean up dead Slimes
+  cleanupSlimes() {
+    this.slimes.children.each((slimeContainer) => {
+      const slime = slimeContainer.getData('instance');
+      if (slime.isDead) {
+        this.slimes.remove(slimeContainer, true, true);
+        this.slimeHitboxes.remove(slime.hitbox, true, true);
+      }
+    });
+  }
 
-      if (!this.warrior.gameOver){
+  makeWarriorInvincible(duration) {
+    if (this.warriorInvincible) return;
+
+    this.hit.play()
+    this.warriorInvincible = true;
+    this.warrior.sprite.setAlpha(0.5);
+
+    if (!this.warrior.gameOver) {
       this.time.delayedCall(duration, () => {
         this.warriorInvincible = false;
         this.warrior.sprite.setAlpha(1);
       });
     }
-    }
+  }
 
-    createScoreText() {
-      const style = {
-        fontSize: '32px',
-        fill: '#ffffff',
-      };
-      if (this.score == undefined) this.score = 0
-      this.scoreText = this.add.text(16, 16, `Score: ${this.score}`, style);
-    }
+  createScoreText() {
+    const style = {
+      fontSize: '32px',
+      fill: '#ffffff',
+    };
+    if (this.score == undefined) this.score = 0
+    this.scoreText = this.add.text(16, 16, `Score: ${this.score}`, style);
+  }
 
-    async createHighScore() {
-      if (location.hostname == "localhost" || location.hostname == "127.0.0.1") return
-      // Make a GET request to your API to retrieve the highest score
-      const response = await fetch('https://slimehack.herokuapp.com/api/highscores'); // Replace with your deployed server URL if necessary
-      const highScores = await response.json();
-    
-      // Find the highest score in the retrieved data
-      const highestScoreObj = highScores.reduce((maxObj, scoreObj) => {
-        return scoreObj.score > maxObj.score ? scoreObj : maxObj;
-      }, { score: 0, initials: '' });
-    
-      // Display the highest score and initials on the top-right corner
-      this.highScoreText = this.add.text(
-        this.scale.width - 16,
-        16,
-        `High Score: ${highestScoreObj.initials} - ${highestScoreObj.score}`,
-        { fontSize: '32px', color: '#ffffff' }
-      );
-      this.highScoreText.setOrigin(1, 0);
-    }
-    
-    togglePause() {
-      this.isPaused = !this.isPaused
-      this.pauseOverlay.setVisible(this.isPaused);
-      this.pausedText.setVisible(this.isPaused);
-  
-      if (this.isPaused) {
-        // Stop animations and other game logic as needed
-        this.physics.pause();
-      } else {
-        // Resume animations and other game logic as needed
-        this.physics.resume();
-      }
+  async createHighScore() {
+    if (location.hostname == "localhost" || location.hostname == "127.0.0.1" || location.hostname.includes("alarice")) return
+    // Make a GET request to your API to retrieve the highest score
+    const response = await fetch('https://slimehack.herokuapp.com/api/highscores'); // Replace with your deployed server URL if necessary
+    const highScores = await response.json();
+
+    // Find the highest score in the retrieved data
+    const highestScoreObj = highScores.reduce((maxObj, scoreObj) => {
+      return scoreObj.score > maxObj.score ? scoreObj : maxObj;
+    }, { score: 0, initials: '' });
+
+    // Display the highest score and initials on the top-right corner
+    this.highScoreText = this.add.text(
+      this.scale.width - 16,
+      16,
+      `High Score: ${highestScoreObj.initials} - ${highestScoreObj.score}`,
+      { fontSize: '32px', color: '#ffffff' }
+    );
+    this.highScoreText.setOrigin(1, 0);
+  }
+
+  togglePause() {
+    this.isPaused = !this.isPaused
+    this.pauseOverlay.setVisible(this.isPaused);
+    this.pausedText.setVisible(this.isPaused);
+
+    if (this.isPaused) {
+      // Stop animations and other game logic as needed
+      this.physics.pause();
+    } else {
+      // Resume animations and other game logic as needed
+      this.physics.resume();
     }
   }
+}

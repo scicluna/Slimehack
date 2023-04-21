@@ -41,6 +41,8 @@ module.exports = {
         new webpack.ProvidePlugin({
             Phaser: 'phaser',
         }),
+            new webpack.HotModuleReplacementPlugin(), // Add this line
+            // ... other plugins
     ],
     devServer: {
         static: {

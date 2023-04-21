@@ -200,7 +200,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async createHighScore() {
-    if (location.hostname == "localhost" || location.hostname == "127.0.0.1" || location.hostname.includes("alarice")) return
+    //depreciated
+    if (true) return
     // Make a GET request to your API to retrieve the highest score
     const response = await fetch('https://slimehack.herokuapp.com/api/highscores'); // Replace with your deployed server URL if necessary
     const highScores = await response.json();
